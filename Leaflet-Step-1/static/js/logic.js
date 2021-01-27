@@ -1,10 +1,10 @@
-/*Setting the map to center around the middle of the United States and attaching a zoom level of 4 so that the continental United States is showing */
+// Setting up map 
 var myMap = L.map("mapid", {
     center: [37.09, -95.71],
     zoom: 4
 });
 
-/* Using Leaflet's street map to as the background for our analysis */
+// Streetmap layer
 var streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
     attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
     maxZoom: 18,
@@ -66,8 +66,30 @@ d3.json(URL, function (data) {
         earthquakeMarker.bindPopup("<h3> " + new Date(earthquakes[i].properties.time) + "</h3><h4>Magnitude: " + magnitude +
             "<br>Location: " + earthquakes[i].properties.place + "</h4><br>");
     };
-
-    // Setting the legend to appear in the bottom right of our chart 
+    
+    onEachFeature: function(feature, layer) {
+      // Set mouse events to change map styling
+      layer.on({
+        // When a user's mouse touches a map feature, the mouseover event calls this function, that feature's opacity changes to 90% so that it stands out
+        mouseover: function(event) {
+          layer = event.target;
+          layer.setStyle({
+            fillOpacity: 0.9
+          });
+        },
+        // When the cursor no longer hovers over a map feature - when the mouseout event occurs - the feature's opacity reverts back to 50%
+        mouseout: function(event) {
+          layer = event.target;
+          layer.setStyle({
+            fillOpacity: 0.5
+          });
+        },
+        // When a feature (neighborhood) is clicked, it is enlarged to fit the screen
+        click: function(event) {
+          myMap.fitBounds(event.target.getBounds());
+        }
+      });
+    // Setting the legend to appear in the bottom right of map
     var legend = L.control({ position: 'bottomright'
     });
     
@@ -76,10 +98,10 @@ d3.json(URL, function (data) {
         var depth = ['-10-10', '10-30', '30-50', '50-70', '70-90', '90+'];
         var colors = ['#4dff4d', '#ffff66', '#ffc299', '#ff8533', '#e65c00', '#ff0000']
         for (var i = 0; i < depth.length; i++) {
-            div.innerHTML += '<i style="background:' + colors[i] + '"></i>' + depth[i] + '<br>';
+            div.innerHTML += '<li style="background:' + colors[i] + '"></li>' + depth[i] + '<br>';
         }
         return div;
-    };
+    }; 
 
     legend.addTo(myMap);
 });
