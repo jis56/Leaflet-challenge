@@ -15,7 +15,6 @@ var streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}
 var URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
 // Grabbing geoJSON data
-
 d3.json(URL, function (data) {
     var earthquakes = data.features;
     //console.log(earthquakes);
@@ -67,28 +66,6 @@ d3.json(URL, function (data) {
             "<br>Location: " + earthquakes[i].properties.place + "</h4><br>");
     };
     
-    onEachFeature: function(feature, layer) {
-      // Set mouse events to change map styling
-      layer.on({
-        // When a user's mouse touches a map feature, the mouseover event calls this function, that feature's opacity changes to 90% so that it stands out
-        mouseover: function(event) {
-          layer = event.target;
-          layer.setStyle({
-            fillOpacity: 0.9
-          });
-        },
-        // When the cursor no longer hovers over a map feature - when the mouseout event occurs - the feature's opacity reverts back to 50%
-        mouseout: function(event) {
-          layer = event.target;
-          layer.setStyle({
-            fillOpacity: 0.5
-          });
-        },
-        // When a feature (neighborhood) is clicked, it is enlarged to fit the screen
-        click: function(event) {
-          myMap.fitBounds(event.target.getBounds());
-        }
-      });
     // Setting the legend to appear in the bottom right of map
     var legend = L.control({ position: 'bottomright'
     });
